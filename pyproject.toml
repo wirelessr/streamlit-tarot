@@ -1,0 +1,14 @@
+[tool.poetry]
+name = "streamlit-tarot"
+version = "0.1.0"
+description = ""
+authors = ["CT Wu <ct@shopline.com>"]
+readme = "readme.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+streamlit = "^1.31.1"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
