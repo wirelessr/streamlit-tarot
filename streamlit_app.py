@@ -14,10 +14,16 @@ def init_desc():
 desc = init_desc()
 
 # Classic Spreads
-cols = st.columns(3)
-cols = [x.empty() for x in cols]
+def init_spread():
+    card_cols = st.columns(3)
+    card_cols = [x.empty() for x in card_cols]
 
-titles = st.columns(3)
+    title_cols = st.columns(3)
+    assert len(title_cols) == len(card_cols)
+
+    return [(card_cols[i], title_cols[i]) for i in range(len(title_cols))]
+
+spread = init_spread()
 
 base_dir = '.'
 img_dir = os.path.join(base_dir, 'img')
@@ -48,16 +54,13 @@ def pick_one():
     img_idx = random.choice([0, 1])
     return img[img_idx], card_path
 
-for col in cols:
-    col.image(os.path.join(img_dir, 'cover.png'))
+# Init card
+for card, _ in spread:
+    card.image(os.path.join(img_dir, 'cover.png'))
 
 if st.button('Go', use_container_width=True):
-    desc_keys = []
-    for col in cols:
+    for card, title in spread:
         img, pk = pick_one()
-        col.image(img, caption=desc[pk]['t'])
-        desc_keys.append(pk)
-
-    for idx, title in enumerate(titles):
-        title.write(desc[desc_keys[idx]]['p'])
-        title.write(desc[desc_keys[idx]]['n'])
+        card.image(img, caption=desc[pk]['t'])
+        title.write(desc[pk]['p'])
+        title.write(desc[pk]['n'])
