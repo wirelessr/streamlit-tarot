@@ -65,11 +65,20 @@ for card, _ in spread:
     card.image(os.path.join(img_dir, 'cover.png'))
 
 if st.button('Go', use_container_width=True):
+    st.session_state['cards'] = []
     for card, title in spread:
         img, pk = pick_one()
-        card.image(img, caption=desc[pk]['t'])
-        title.write(desc[pk]['p'])
-        title.write(desc[pk]['n'])
+        st.session_state['cards'].append((img, pk))
+
+
+if 'cards' in st.session_state:
+    card_state = st.session_state['cards']
+    for idx, (card, title) in enumerate(spread):
+        card_img = card_state[idx][0]
+        card_pk = card_state[idx][1]
+        card.image(card_img, caption=desc[card_pk]['t'])
+        title.write(desc[card_pk]['p'])
+        title.write(desc[card_pk]['n'])
         if is_full_desc:
-            for l in full_desc[desc[pk]['t']]:
+            for l in full_desc[desc[card_pk]['t']]:
                 title.write(l)
