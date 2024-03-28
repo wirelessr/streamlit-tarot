@@ -8,10 +8,12 @@ import numpy as np
 @st.cache_data
 def init_desc():
     with open('desc.json', encoding='utf-8') as f:
-        ret = json.load(f)
-    return ret
+        brief = json.load(f)
+    with open('full_desc.json', encoding='utf-8') as f:
+        full = json.load(f)
+    return brief, full
 
-desc = init_desc()
+desc, full_desc = init_desc()
 
 # Classic Spreads
 def init_spread():
@@ -54,6 +56,10 @@ def pick_one():
     img_idx = random.choice([0, 1])
     return img[img_idx], card_path
 
+# config
+with st.sidebar:
+    is_full_desc = st.toggle('Full Description')
+
 # Init card
 for card, _ in spread:
     card.image(os.path.join(img_dir, 'cover.png'))
@@ -64,3 +70,6 @@ if st.button('Go', use_container_width=True):
         card.image(img, caption=desc[pk]['t'])
         title.write(desc[pk]['p'])
         title.write(desc[pk]['n'])
+        if is_full_desc:
+            for l in full_desc[desc[pk]['t']]:
+                title.write(l)
