@@ -143,10 +143,12 @@ if 'cards' in st.session_state:
         with st.chat_message("user"):
             st.markdown(input_text)
 
-        response = retrieval_chain.invoke({
-            'input': input_text,
-            'context': []
-        })
-        
-        with st.chat_message("assistant"):
-            st.markdown(response['answer'])
+        with st.empty():
+            with st.status("Processing..."):
+                response = retrieval_chain.invoke({
+                    'input': input_text,
+                    'context': []
+                })
+            
+            with st.chat_message("assistant"):
+                st.markdown(response['answer'])
