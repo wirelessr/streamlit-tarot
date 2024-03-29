@@ -1,17 +1,7 @@
 import os
 import random
-import json
 from collections import namedtuple
 import streamlit as st
-from PIL import Image
-import numpy as np
-
-@st.cache_resource
-def init_connection():
-    import pymongo
-    return pymongo.MongoClient(st.secrets["mongo"]["uri"])
-
-client = init_connection()
 
 @st.cache_resource
 def init_embeddings():
@@ -23,13 +13,12 @@ def init_llm():
     from langchain_google_genai import ChatGoogleGenerativeAI
     return ChatGoogleGenerativeAI(model="gemini-pro", convert_system_message_to_human=True)
 
-def init_retriever(client, embeddings):
+def init_retriever(embeddings):
     from langchain_community.vectorstores import MongoDBAtlasVectorSearch
 
     DB_NAME = "langchain_db"
     COLLECTION_NAME = "test"
     ATLAS_VECTOR_SEARCH_INDEX_NAME = "index_name"
-    MONGODB_COLLECTION = client[DB_NAME][COLLECTION_NAME]
 
     vector_search = MongoDBAtlasVectorSearch.from_connection_string(
         st.secrets["mongo"]["uri"],
@@ -42,6 +31,7 @@ def init_retriever(client, embeddings):
 
 @st.cache_data
 def init_desc():
+    import json
     with open('desc.json', encoding='utf-8') as f:
         brief = json.load(f)
     with open('full_desc.json', encoding='utf-8') as f:
@@ -77,6 +67,8 @@ files = init_file(card_img_dir)
 random.shuffle(files)
 
 def open_image(fp):
+    from PIL import Image
+    import numpy as np
     image = Image.open(fp)
 
     image_array = np.array(image)
@@ -137,7 +129,7 @@ if 'cards' in st.session_state:
 
         llm = init_llm()
         embeddings = init_embeddings()
-        retriever = init_retriever(client, embeddings)
+        retriever = init_retriever(embeddings)
 
         input_text = ', '.join([f"{'逆位' if stat.reversed else ''}{desc[stat.img_name]['t']}" for stat in card_state])
 
