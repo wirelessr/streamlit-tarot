@@ -51,8 +51,6 @@ def init_time_flow_spread():
 
     return [SpreadSlot(card_cols[i], desc_cols[i]) for i in range(len(desc_cols))]
 
-spread = init_time_flow_spread()
-
 base_dir = '.'
 img_dir = os.path.join(base_dir, 'img')
 card_img_dir = os.path.join(img_dir, 'big')
